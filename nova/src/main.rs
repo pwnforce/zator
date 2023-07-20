@@ -28,7 +28,7 @@ use std::{
 type C1 = CircomCircuit<<G1 as Group>::Scalar>;
 type C2 = TrivialTestCircuit<<G2 as Group>::Scalar>;
 
-const DEBUG: bool = false;
+const DEBUG: bool = true;
 
 const TRACE_NAME: &str = if DEBUG {
     "PADDED_trace_dim4_nlayers2.json"
@@ -44,8 +44,8 @@ const CIRCOM_PREFIX: &str = if DEBUG {
 const FWD_PASS_F: &str = formatcp!("../models/json/{}", TRACE_NAME);
 const MIMC3D_R1CS_F: &str = formatcp!("{}/MiMC3D.r1cs", CIRCOM_PREFIX);
 const MIMC3D_WASM_F: &str = formatcp!("{}/MiMC3D.wasm", CIRCOM_PREFIX);
-const BACKBONE_R1CS_F: &str = formatcp!("{}/Backbone1.r1cs", CIRCOM_PREFIX);
-const BACKBONE_F: &str = formatcp!("{}/Backbone1", CIRCOM_PREFIX);
+const BACKBONE_R1CS_F: &str = formatcp!("{}/Backbone.r1cs", CIRCOM_PREFIX);
+const BACKBONE_F: &str = formatcp!("{}/Backbone", CIRCOM_PREFIX);
 
 #[derive(Serialize)]
 struct MiMC3DInput {
@@ -296,6 +296,10 @@ fn spartan(
 fn main() {
     let root = current_dir().unwrap();
     let backbone_r1cs = load_r1cs(&FileLocation::PathBuf(root.join(BACKBONE_R1CS_F)));
+    println!(
+        "- backbone: {:?}",
+        root.join(BACKBONE_R1CS_F)
+    );
     let backbone_witgen = root.join(BACKBONE_F);
     let mimc3d_r1cs = load_r1cs(&FileLocation::PathBuf(root.join(MIMC3D_R1CS_F)));
     let mimc3d_wasm = root.join(MIMC3D_WASM_F);

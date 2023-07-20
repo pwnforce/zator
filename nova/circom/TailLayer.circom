@@ -1,7 +1,7 @@
 pragma circom 2.1.1;
 
-include "../../node_modules/circomlib-ml/circuits/Dense.circom";
-include "mimcsponge.circom";
+include "./node_modules/circomlib-ml/circuits/Dense.circom";
+include "./utils/mimcsponge.circom";
 
 template TailLayer() {
     var inRows = 3136;

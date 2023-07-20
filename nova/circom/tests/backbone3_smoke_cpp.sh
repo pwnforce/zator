@@ -3,7 +3,7 @@
 # ==
 
 # Compile circuit
-circom ../Backbone3.circom --r1cs --c --prime vesta
+circom ../Backbone3.circom  --r1cs --wasm --sym --c --prime vesta
 
 # Generate the witness, primarily as a smoke test for the circuit
 make -C Backbone3_cpp/
@@ -17,4 +17,5 @@ fi
 mv Backbone3_cpp/Backbone3 ../out
 mv Backbone3_cpp/Backbone3.dat ../out
 mv Backbone3.r1cs ../out
-rm -r Backbone3_cpp/ Backbone3.wtns
+mv Backbone3_js/Backbone3.wasm ../out
+# rm -r Backbone3_cpp/ Backbone3.wtns

@@ -4,6 +4,7 @@ include "./node_modules/circomlib-ml-vesta/circuits/circomlib/mimc.circom";
 include "./node_modules/circomlib-ml-vesta/circuits/Conv2D.circom";
 include "./utils/mimcsponge.circom";
 include "./utils/utils.circom";
+include "./utils/Division.circom";
 
 // Template for the first (head) layer of a Convnet
 template HeadLayer(nRows, nCols, nChannels, nFilters, kernelSize, strides) {
@@ -41,6 +42,7 @@ template HeadLayer(nRows, nCols, nChannels, nFilters, kernelSize, strides) {
     convLayer.weights <== W;
     convLayer.bias <== b;
 
+    component divs[convLayerOutputRows][convLayerOutputCols][convLayerOutputDepth];
     component relu[convLayerOutputRows][convLayerOutputCols][convLayerOutputDepth];
     // Now Relu all of the elements in the 3D Matrix output of our Conv2D Layer
     // The Relu'd outputs are stored in a flattened activations vector
@@ -50,7 +52,10 @@ template HeadLayer(nRows, nCols, nChannels, nFilters, kernelSize, strides) {
                 relu[row][col][depth] = ReLU();
                 relu[row][col][depth].in <== convLayer.out[row][col][depth];
                 // Floor divide by the scale factor
-                activations[row][col][depth] <== relu[row][col][depth].out \ scaleFactor;
+                divs[row][col][depth] = Division(scaleFactor);
+                divs[row][col][depth].dividend <== relu[row][col][depth].out;
+                activations[row][col][depth] <== divs[row][col][depth].quotient;
+                // activations[row][col][depth] <== relu[row][col][depth].out \ scaleFactor;
             }
         }
     }
